@@ -6,6 +6,14 @@ A beautiful, feature-rich command-line tool for downloading YouTube videos and p
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)
 
+## 📥 Download
+
+**[⬇️ Download ytdl-start.exe (Latest Release)](https://github.com/ncjpr04/yt-playlist-video-downloader-CLI/releases/latest)**
+
+> No installation required! Just download and run.
+> 
+> **Recommended:** Install [FFmpeg](https://ffmpeg.org/download.html) for 720p+ quality support.
+
 ## ✨ Features
 
 - 🎯 **8 Quality Options** - From 144p to 4K (2160p)
