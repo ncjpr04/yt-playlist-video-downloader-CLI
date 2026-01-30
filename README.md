@@ -96,6 +96,23 @@ python build.py
 
 7. **Confirm and download!**
 
+## 🔄 Keeping yt-dlp Updated
+
+**Important:** YouTube frequently blocks older yt-dlp versions. If downloads fail with **HTTP 403: Forbidden**:
+
+```bash
+# Update yt-dlp to latest version
+pip install --upgrade yt-dlp
+
+# Rebuild the executable (if using .exe)
+python build.py
+```
+
+**Or run directly from source** (always uses latest yt-dlp):
+```bash
+python -m ytdl_cli.cli
+```
+
 ## 📖 Usage Examples
 
 ### Download Single Video
@@ -227,7 +244,48 @@ python build.py
 # Output: dist/ytdl-start.exe (37.7 MB)
 ```
 
-## 📝 License
+## � Troubleshooting
+
+### Windows SmartScreen Warning
+
+When running the `.exe` file, you may see:
+> **Windows protected your PC**  
+> Microsoft Defender SmartScreen prevented an unrecognized app from starting.
+
+**This is normal!** The executable is **not digitally signed** (would require expensive code signing certificate).
+
+**To run the app:**
+1. Click **"More info"**
+2. Click **"Run anyway"**
+3. The app will run normally
+
+**Why this happens:**
+- Your executable is not signed with a Microsoft-trusted certificate
+- The app hasn't been downloaded enough times to build "reputation"
+- This affects all unsigned executables, including those from PyInstaller
+
+**Alternative:** Run from source using Python to avoid this warning:
+```bash
+python -m ytdl_cli.cli
+```
+
+### FFmpeg Not Found Warning
+
+If you see a warning about FFmpeg when downloading 720p+ quality:
+```bash
+# Install FFmpeg
+choco install ffmpeg
+
+# Or download from: https://ffmpeg.org/download.html
+```
+
+### Downloads Not Merging
+
+If you get separate video and audio files:
+- **Cause:** FFmpeg is not installed or not in PATH
+- **Fix:** Install FFmpeg (see above)
+
+## �📝 License
 
 MIT License - see LICENSE file for details
 

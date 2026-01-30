@@ -214,6 +214,9 @@ class Downloader:
                 bufsize=1
             )
             
+            # Store all output for error reporting
+            all_output = []
+            
             with Progress(
                 TextColumn("[bold blue]{task.description}"),
                 BarColumn(),
@@ -224,26 +227,40 @@ class Downloader:
                 task = progress.add_task("Downloading...", total=100)
                 
                 for line in process.stdout:
+                    all_output.append(line)  # Store all lines
+                    
                     # Parse yt-dlp output for progress
                     if '[download]' in line and '%' in line:
                         try:
                             # Extract percentage
-                            percent_str = line.split('%')[0].split()[-1]
-                            percent = float(percent_str)
+                            percent_match = line.split('%')[0].split()[-1]
+                            percent = float(percent_match)
                             progress.update(task, completed=percent)
                         except (ValueError, IndexError):
                             pass
-                
-                process.wait()
             
-            if process.returncode == 0:
-                return True
-            else:
-                console.print(f"[red]Download failed with code {process.returncode}[/red]")
-                return False
+            # Get the return code
+            returncode = process.wait()
+            
+            if returncode != 0:
+                # Show the last error lines
+                error_lines = [l for l in all_output if 'ERROR' in l.upper() or 'error' in l]
+                if not error_lines:
+                    error_lines = all_output[-10:]  # Show last 10 lines
                 
+                console.print(f"\n[bold red]yt-dlp error:[/bold red]")
+                for line in error_lines[-5:]:  # Show last 5 error lines
+                    console.print(f"[red]{line.strip()}[/red]")
+                raise RuntimeError(f"Download failed with code {returncode}")
+            
+            return True
+            
+        except subprocess.TimeoutExpired:
+            process.kill()
+            console.print("[bold red]Download timed out[/bold red]")
+            return False
         except Exception as e:
-            console.print(f"[red]Download error: {e}[/red]")
+            console.print(f"[bold red]Error: {str(e)}[/bold red]")
             return False
     
     def download_playlist(
